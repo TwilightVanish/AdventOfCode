@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AdventOfCode.AOCHelper;
 
@@ -27,17 +26,15 @@ namespace AdventOfCode
             foreach (var step in steps)
                 switch (step.Direction)
                 {
-                    case Direction.Forward:
+                    case "forward":
                         distance += step.Amount;
                         break;
-                    case Direction.Up:
+                    case "up":
                         depth -= step.Amount;
                         break;
-                    case Direction.Down:
+                    default:
                         depth += step.Amount;
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
 
             return distance * depth;
@@ -53,18 +50,16 @@ namespace AdventOfCode
             foreach (var step in steps)
                 switch (step.Direction)
                 {
-                    case Direction.Forward:
+                    case "forward":
                         distance += step.Amount;
                         depth += step.Amount * aim;
                         break;
-                    case Direction.Up:
+                    case "up":
                         aim -= step.Amount;
                         break;
-                    case Direction.Down:
+                    default:
                         aim += step.Amount;
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
 
             return distance * depth;
@@ -72,29 +67,27 @@ namespace AdventOfCode
 
         private Instruction[] ParseInput()
         {
-            return _input
-                .Select(x => x.Split(' '))
-                .Select(x => new Instruction(Enum.Parse<Direction>(x[0], true), int.Parse(x[1])))
-                .ToArray();
+            var parsed = new Instruction[_input.Length];
+            
+            for (var i = 0; i < _input.Length; i++)
+            {
+                var split = _input[i].Split(' ');
+                parsed[i] = new Instruction(split[0], int.Parse(split[1]));
+            }
+
+            return parsed;
         }
     }
 
     public readonly struct Instruction
     {
-        public Direction Direction { get; }
+        public string Direction { get; }
         public int Amount { get; }
 
-        public Instruction(Direction direction, int amount)
+        public Instruction(string direction, int amount)
         {
             Direction = direction;
             Amount = amount;
         }
-    }
-
-    public enum Direction
-    {
-        Forward,
-        Up,
-        Down
     }
 }

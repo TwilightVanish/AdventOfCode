@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AdventOfCode.AOCHelper;
 
 namespace AdventOfCode
@@ -30,7 +29,13 @@ namespace AdventOfCode
 
         private int[] ParseInput()
         {
-            return _input.Select(int.Parse).ToArray();
+            var parsed = new int[_input.Length];
+            for (var i = 0; i < _input.Length; i++)
+            {
+                parsed[i] = int.Parse(_input[i]);
+            }
+
+            return parsed;
         }
     }
 }
