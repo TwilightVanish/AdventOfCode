@@ -1,21 +1,17 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AdventOfCode.AOCHelper;
 
 namespace AdventOfCode
 {
-    public sealed class Day02 : BaseDay
+    public sealed class Day02 : ExtendedDay
     {
-        private readonly Instruction[] _input;
+        private readonly string[] _input;
 
         public Day02()
         {
-            _input = File.ReadAllText(InputFilePath)
-                .Split('\n')
-                .Select(x => x.Split(' '))
-                .Select(x => new Instruction(Enum.Parse<Direction>(x[0], true), int.Parse(x[1])))
-                .ToArray();
+            _input = InputAsArray;
         }
 
         public override ValueTask<string> Solve_1() => new(FindDestination().ToString());
@@ -24,10 +20,11 @@ namespace AdventOfCode
 
         private int FindDestination()
         {
+            var steps = ParseInput();
             var distance = 0;
             var depth = 0;
 
-            foreach (var step in _input)
+            foreach (var step in steps)
                 switch (step.Direction)
                 {
                     case Direction.Forward:
@@ -48,11 +45,12 @@ namespace AdventOfCode
 
         private int FindDestinationWithAim()
         {
+            var steps = ParseInput();
             var distance = 0;
             var depth = 0;
             var aim = 0;
 
-            foreach (var step in _input)
+            foreach (var step in steps)
                 switch (step.Direction)
                 {
                     case Direction.Forward:
@@ -70,6 +68,14 @@ namespace AdventOfCode
                 }
 
             return distance * depth;
+        }
+
+        private Instruction[] ParseInput()
+        {
+            return _input
+                .Select(x => x.Split(' '))
+                .Select(x => new Instruction(Enum.Parse<Direction>(x[0], true), int.Parse(x[1])))
+                .ToArray();
         }
     }
 

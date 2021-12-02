@@ -1,16 +1,16 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using AdventOfCode.AOCHelper;
 
 namespace AdventOfCode
 {
-    public sealed class Day01 : BaseDay
+    public sealed class Day01 : ExtendedDay
     {
-        private readonly int[] _input;
+        private readonly string[] _input;
 
         public Day01()
         {
-            _input = File.ReadAllText(InputFilePath).Split("\n").Select(int.Parse).ToArray();
+            _input = InputAsArray;
         }
 
         public override ValueTask<string> Solve_1() => new(CountDepthIncrements(1).ToString());
@@ -18,13 +18,19 @@ namespace AdventOfCode
 
         private int CountDepthIncrements(int slidingWindow)
         {
+            var depths = ParseInput();
             var count = 0;
 
-            for (var i = slidingWindow; i < _input.Length; i++)
-                if (_input[i] > +_input[i - slidingWindow]) 
+            for (var i = slidingWindow; i < depths.Length; i++)
+                if (depths[i] > depths[i - slidingWindow]) 
                     count++;
 
             return count;
+        }
+
+        private int[] ParseInput()
+        {
+            return _input.Select(int.Parse).ToArray();
         }
     }
 }
