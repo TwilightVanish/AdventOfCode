@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AdventOfCode
@@ -10,14 +11,11 @@ namespace AdventOfCode
 
         public Day02()
         {
-            var lines = File.ReadAllText(InputFilePath).Split('\n');
-            _input = new Instruction[lines.Length];
-
-            for (var i = 0; i < lines.Length; i++)
-            {
-                var entry = lines[i].Split(' ');
-                _input[i] = new Instruction(Enum.Parse<Direction>(entry[0], true), int.Parse(entry[1]));
-            }
+            _input = File.ReadAllText(InputFilePath)
+                .Split('\n')
+                .Select(x => x.Split(' '))
+                .Select(x => new Instruction(Enum.Parse<Direction>(x[0], true), int.Parse(x[1])))
+                .ToArray();
         }
 
         public override ValueTask<string> Solve_1() => new(FindDestination().ToString());
