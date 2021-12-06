@@ -20,11 +20,9 @@ namespace AdventOfCode
 
         private long SimulatedGrowth(int days)
         {
-            var schools = Enumerable.Range(0, 9).ToDictionary(num => num, num => 0L);
-            foreach (var f in _input.Split(',').Select(int.Parse))
-            {
-                schools[f]++;
-            }
+            Span<long> schools = stackalloc long[9];
+            for (var pos = 0; pos < _input.Length; pos += 2)
+                schools[_input[pos] - '0']++;
 
             for (var day = 0; day < days; day++)
             {
@@ -37,8 +35,14 @@ namespace AdventOfCode
                 schools[8] = temp;
                 schools[6] += temp;
             }
-            
-            return schools.Sum(x => x.Value);
+
+            var sum = 0L;
+            for (var s = 0; s <= 8; s++)
+            {
+                sum += schools[s];
+            }
+
+            return sum;
         }
     }
 }
