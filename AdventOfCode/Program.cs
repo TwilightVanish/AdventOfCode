@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using AdventOfCode.Benchmarks;
+﻿using AdventOfCode.Benchmarks;
 using BenchmarkDotNet.Running;
 
 switch (args.Length)
