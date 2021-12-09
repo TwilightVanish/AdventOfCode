@@ -67,31 +67,31 @@ public sealed class Day09 : ExtendedDay
         return results[^1] * results[^2] * results[^3];
     }
 
-    private List<Point> GetValidNeighbours(Point initial)
+    private List<Point> GetValidNeighbours(Point point)
     {
-        var valid = new List<Point>(4);
+        var neighbours = new List<Point>(4);
         
-        if (initial.X != 0)
+        if (point.X != 0)
         {
-            valid.Add(new Point(initial.X - 1, initial.Y));
+            neighbours.Add(new Point(point.X - 1, point.Y));
         }
                         
-        if (initial.X != _input[0].Length - 1)
+        if (point.X != _input[0].Length - 1)
         {
-            valid.Add(new Point(initial.X + 1, initial.Y));
+            neighbours.Add(new Point(point.X + 1, point.Y));
         }
                         
-        if (initial.Y != 0)
+        if (point.Y != 0)
         {
-            valid.Add(new Point(initial.X, initial.Y - 1));
+            neighbours.Add(new Point(point.X, point.Y - 1));
         }
                         
-        if (initial.Y != _input.Length - 1)
+        if (point.Y != _input.Length - 1)
         {
-            valid.Add(new Point(initial.X, initial.Y + 1));
+            neighbours.Add(new Point(point.X, point.Y + 1));
         }
 
-        return valid;
+        return neighbours;
     }
 
     private Point[] GetLowPoints(int[][] graph)
@@ -126,18 +126,18 @@ public sealed class Day09 : ExtendedDay
 
     private int[][] ParseInput()
     {
-        var parsedMap = new int[_input.Length][];
-        for (var l = 0; l < _input.Length; l++)
+        var parsedGraph = new int[_input.Length][];
+        for (var line = 0; line < _input.Length; line++)
         {
-            var parsedLine = new int[_input[l].Length];
-            for (var c = 0; c < _input[l].Length; c++)
+            var parsedLine = new int[_input[line].Length];
+            for (var chr = 0; chr < _input[line].Length; chr++)
             {
-                parsedLine[c] = _input[l][c] - '0';
+                parsedLine[chr] = _input[line][chr] - '0';
             }
 
-            parsedMap[l] = parsedLine;
+            parsedGraph[line] = parsedLine;
         }
 
-        return parsedMap;
+        return parsedGraph;
     }
 }
