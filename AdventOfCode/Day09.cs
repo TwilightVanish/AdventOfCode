@@ -41,12 +41,9 @@ public sealed class Day09 : ExtendedDay
             var queue = new Queue<Point>(new[] {new Point(lowPoints[i].X, lowPoints[i].Y)});
 
             var pointCount = 0;
-            while (queue.Count > 0)
+            while (queue.TryDequeue(out var point))
             {
-                var point = queue.Dequeue();
-
-                if (visited.Contains(point)) continue;
-                visited.Add(point);
+                if (!visited.Add(point)) continue;
 
                 if (graph[point.Y][point.X] == 9) continue;
                 pointCount++;
@@ -76,7 +73,7 @@ public sealed class Day09 : ExtendedDay
             neighbours.Add(new Point(point.X - 1, point.Y));
         }
                         
-        if (point.X != _input[0].Length - 1)
+        if (point.X < _input[0].Length - 1)
         {
             neighbours.Add(new Point(point.X + 1, point.Y));
         }
@@ -86,7 +83,7 @@ public sealed class Day09 : ExtendedDay
             neighbours.Add(new Point(point.X, point.Y - 1));
         }
                         
-        if (point.Y != _input.Length - 1)
+        if (point.Y < _input.Length - 1)
         {
             neighbours.Add(new Point(point.X, point.Y + 1));
         }
