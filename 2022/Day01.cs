@@ -20,7 +20,7 @@ public sealed class Day01 : BaseDay
         // Create elves
         for (var i = 0; i < Input.Length; i++)
         {
-            if (string.IsNullOrWhiteSpace(Input[i]))
+            if (Input[i] == "")
             {
                 elves.Add(buffer);
                 buffer = 0;
