@@ -4,11 +4,9 @@ namespace AdventOfCode._2022;
 
 public sealed class Day02 : BaseDay
 {
-    public Day02() : base(2, 2022)
-    {
-    }
+    public Day02() : base(2, 2022) {}
 
-    public override void Parse() => Part1();
+    public override void Parse() {}
     public override string Part1() => GetWrongPoints().ToString();
     public override string Part2() => GetPoints().ToString();
 
