@@ -6,7 +6,7 @@ public sealed class Day03 : BaseDay
 {
     public Day03() : base(3, 2022) {}
 
-    public override void Parse() => Part1();
+    public override void Parse() {}
     public override string Part1() => FindStrays().ToString();
     public override string Part2() => FindBadges().ToString();
 
