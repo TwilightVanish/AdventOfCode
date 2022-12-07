@@ -30,8 +30,8 @@ public sealed class Day07 : BaseDay
 
     private int GetTargetFolder()
     {
-        var neededStorage = -40000000 + _sizes[^1];
-        var target = 70000000;
+        var neededStorage = _sizes[^1] - 40000000;
+        var target = int.MaxValue;
         for (var i = 0; i < _sizes.Count; i++)
         {
             if (_sizes[i] >= neededStorage && _sizes[i] < target) 
@@ -41,8 +41,6 @@ public sealed class Day07 : BaseDay
         return target;
     }
 
-
-
     private List<int> GetFolderSizes()
     {
         var root = new Directory();
@@ -50,21 +48,14 @@ public sealed class Day07 : BaseDay
         
         for (var i = 1; i < Input.Length; i++)
         {
-            switch (Input[i][..4])
+            if (Input[i][0] is >= '0' and <= '9')
             {
-                case "$ cd":
-                    var path = Input[i][5..];
-                    currentDirectory = path == ".." ? currentDirectory!.Parent : currentDirectory!.Subdirectories[path];
-                    break;
-                case "dir ":
-                    currentDirectory!.AddDirectory(Input[i][4..]);
-                    break;
-                case "$ ls":
-                    break;
-                default:
-                    currentDirectory!.Size += CustomParser.ParseInt(Input[i].Split(' ')[0]);
-                    break;
+                currentDirectory!.Size += CustomParser.CheckedParseInt(Input[i]);
+                continue;
             }
+
+            if(Input[i][2] != 'c') continue;
+            currentDirectory = Input[i] == "$ cd .." ? currentDirectory!.Parent : currentDirectory!.NewDirectory();
         }
         
         var results = new List<int>();
@@ -76,10 +67,11 @@ public sealed class Day07 : BaseDay
     private static int GetRecursiveSums(Directory directory, List<int> results)
     {
         var size = directory.Size;
-        foreach (var dir in directory.Subdirectories)
+        for (var i = 0; i < directory.Subdirectories.Count; i++)
         {
-            size += GetRecursiveSums(dir.Value, results);
+            size += GetRecursiveSums(directory.Subdirectories[i], results);
         }
+
         results.Add(size);
 
         return size;
@@ -89,11 +81,12 @@ public sealed class Day07 : BaseDay
     {
         public int Size { get; set; }
         public Directory? Parent { get; private init; }
-        public Dictionary<string, Directory> Subdirectories { get; } = new();
+        public List<Directory> Subdirectories { get; } = new();
 
-        public void AddDirectory(string name)
+        public Directory NewDirectory()
         {
-            Subdirectories.Add(name, new Directory{ Parent = this });
+            Subdirectories.Add(new Directory{ Parent = this });
+            return Subdirectories[^1];
         }
     }
 }
