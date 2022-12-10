@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode.Utility;
+﻿using System.Runtime.CompilerServices;
+
+namespace AdventOfCode.Utility;
 
 public static class CustomParser
 {
@@ -24,7 +26,28 @@ public static class CustomParser
             if (input[i] is < '0' or > '9') break;
             value = value * 10 + (input[i] - '0');
         }
-            
+
         return value;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
+    public static int SignedParseInt(ReadOnlySpan<char> input, int offset)
+    {
+        var negative = false;
+        var start = offset;
+
+        if (input[offset] == '-')
+        {
+            negative = true;
+            start++;
+        }
+
+        var value = 0;
+        for (var i = start; i < input.Length; i++)
+        {
+            value = value * 10 + (input[i] - '0');
+        }
+
+        return negative ? -value : value;
     }
 }
