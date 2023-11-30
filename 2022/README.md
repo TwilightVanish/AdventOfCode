@@ -1,4 +1,7 @@
 # 2022 Benchmarks
+
+- Intel Core i7-8750H CPU 2.20GHz (Coffee Lake), 1 CPU, 12 logical and 6 physical cores
+- Generic Single channel DDR4 2666 MHz 16GB
 ---
 ### Day 01
 | Method |         Mean |      Error |     StdDev |   Gen0 | Allocated |
