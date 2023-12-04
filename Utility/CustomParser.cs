@@ -29,6 +29,18 @@ public static class CustomParser
 
         return value;
     }
+    
+    public static int GreedyParseInt(ReadOnlySpan<char> input)
+    {
+        var value = 0;
+        for (var i = 0; i < input.Length; i++)
+        {
+            if (input[i] is < '0' or > '9') continue;
+            value = value * 10 + (input[i] - '0');
+        }
+
+        return value;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static int SignedParseInt(ReadOnlySpan<char> input, int offset)
