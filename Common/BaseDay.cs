@@ -18,8 +18,8 @@ public abstract class BaseDay
         var relative = isBenchmark ? "../../../../../../../" : "../../../";
         try
         {
-            Input = File.ReadLines($"{relative}{Year}/Inputs/{Day.ToString("D2")}.txt").ToArray();
-            RawInput = File.ReadAllText($"{relative}{Year}/Inputs/{Day.ToString("D2")}.txt");
+            Input = File.ReadLines($"{relative}{Year}/Inputs/{Day:D2}.txt").ToArray();
+            RawInput = File.ReadAllText($"{relative}{Year}/Inputs/{Day:D2}.txt");
         }
         catch (FileNotFoundException)
         {

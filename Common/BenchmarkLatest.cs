@@ -5,12 +5,7 @@ namespace AdventOfCode.Common;
 [MemoryDiagnoser]
 public class BenchmarkLatest
 {
-    private readonly BaseDay _day;
-
-    public BenchmarkLatest()
-    {
-        _day = Solver.GetMostRecentDay();
-    }
+    private readonly BaseDay _day = Solver.GetMostRecentDay();
 
     [Benchmark]
     public string Part1()
