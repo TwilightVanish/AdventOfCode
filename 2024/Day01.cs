@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Common;
+﻿using System.Numerics;
+using AdventOfCode.Common;
 using AdventOfCode.Utility;
 
 namespace AdventOfCode._2024;
@@ -15,19 +16,25 @@ public sealed class Day01 : BaseDay
     public override void Parse() => ParseLocationData();
     public override string Part1() => GetDifferenceSum().ToString();
     public override string Part2() => CalculateSimilarityScore().ToString();
-
+    
     private int GetDifferenceSum()
     {
-        var difference = 0;
         var one = _locationData.One;
         var two = _locationData.Two;
-        
-        for (var i = 0; i < one.Length; i++)
+
+        var vectorSize = Vector<int>.Count;
+        var vectorSum = Vector<int>.Zero;
+        int i;
+
+        for (i = 0; i <= one.Length - vectorSize; i += vectorSize)
         {
-            difference += Math.Abs(one[i] - two[i]);
+            var vectorOne = new Vector<int>(one, i);
+            var vectorTwo = new Vector<int>(two, i);
+            var absDiff = Vector.Abs(vectorOne - vectorTwo);
+            vectorSum += absDiff;
         }
 
-        return difference;
+        return Vector.Sum(vectorSum);
     }
 
     private int CalculateSimilarityScore()
@@ -56,21 +63,21 @@ public sealed class Day01 : BaseDay
 
     private LocationData ParseLocationData()
     {
-        var locationContainer = new LocationData(Input.Length);
+        var locationData = new LocationData(Input.Length);
         
         var index = 0;
         foreach (var line in RawInput.AsSpan().EnumerateLines())
         {
             var (id1, id2) = ParseLine(line);
-            locationContainer.One[index] = id1;
-            locationContainer.Two[index] = id2;
+            locationData.One[index] = id1;
+            locationData.Two[index] = id2;
             index++;
         }
         
-        Array.Sort(locationContainer.One);
-        Array.Sort(locationContainer.Two);
+        Array.Sort(locationData.One);
+        Array.Sort(locationData.Two);
 
-        return locationContainer;
+        return locationData;
     }
 
     private static (int, int) ParseLine(ReadOnlySpan<char> line)
