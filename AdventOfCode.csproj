@@ -11,8 +11,4 @@
       <PackageReference Include="BenchmarkDotNet" Version="0.13.10" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="2024\Inputs\" />
-    </ItemGroup>
-
 </Project>
