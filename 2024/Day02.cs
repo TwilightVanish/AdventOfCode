@@ -39,7 +39,7 @@ public sealed class Day02 : BaseDay
 
         return safeReports;
     }
-
+    
     private int[][] GetReports()
     {
         var reports = new int[Input.Length][];
@@ -87,13 +87,15 @@ public sealed class Day02 : BaseDay
                 continue;
             }
             
-            if (i == 1 || IsSafeReading(report[i], report[i + 1], !increasing))
+            if (i == 1 && (IsSafeReading(report[i], report[i + 1], !increasing) || IsSafeReading(report[i - 1], report[i + 1], !increasing)))
             {
                 increasing = !increasing;
                 continue;
             }
 
             if (i > 0 && !IsSafeReading(report[i - 1], report[i + 1], increasing)) return false;
+            
+            if (i == 0 && !IsSafeReading(report[i + 1], report[i + 2], increasing)) increasing = !increasing;
         }
         
         return true;
