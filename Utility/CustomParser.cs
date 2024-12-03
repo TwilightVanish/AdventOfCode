@@ -41,6 +41,28 @@ public static class CustomParser
 
         return value;
     }
+    
+    public static int ParseIntWithRefOffset(ReadOnlySpan<char> span, ref int offset)
+    {
+        var result = 0;
+        var start = offset;
+        while (offset < span.Length && span[offset] >= '0' && span[offset] <= '9')
+        {
+            result = result * 10 + (span[offset++] - '0');
+        }
+        return result;
+    }
+    
+    public static bool TryParseIntWithRefOffset(ReadOnlySpan<char> span, ref int offset, out int result)
+    {
+        result = 0;
+        var start = offset;
+        while (offset < span.Length && span[offset] >= '0' && span[offset] <= '9')
+        {
+            result = result * 10 + (span[offset++] - '0');
+        }
+        return offset > start;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveOptimization | MethodImplOptions.AggressiveInlining)]
     public static int SignedParseInt(ReadOnlySpan<char> input, int offset)
