@@ -58,8 +58,8 @@ public sealed class Day05 : BaseDay
 
     private int CountApplicableRules(int[] job, int page)
     {
+        if (!_printer.Rules.TryGetValue(page, out var rulesForPage)) return 0;
         var count = 0;
-        var rulesForPage = _printer.Rules[page];
 
         for (var i = 0; i < rulesForPage.Count; i++)
         {
