@@ -18,56 +18,16 @@ public sealed class Day06 : BaseDay
 
     private int CountVisitedPositions()
     {
-        var width = _graph.Nodes[0].Length;
-        var height = _graph.Nodes.Length;
-
-        Span<bool> visited = stackalloc bool[height * width];
-        var count = 0;
-        
-        var position = _graph.Start;
-        var direction = 0;
-        
-        while (true)
-        {
-            if (position.Col >= width || position.Row >= height || position.Col < 0 || position.Row < 0) return count;
-
-            var node = _graph.Nodes[position.Row][position.Col]!.Value;
-            while (!node.Neighbours[direction].HasValue)
-            {
-                direction = (direction + 1) % 4;
-            }
-            
-            var newPosition = node.Neighbours[direction]!.Value;
-
-            while (position.Col != newPosition.Col || position.Row != newPosition.Row)
-            {
-                var index = position.Row * width + position.Col;
-                if (!visited[index])
-                {
-                    visited[index] = true;
-                    count++;
-                }
-                
-                position.Col += Directions[direction].DirectionX;
-                position.Row += Directions[direction].DirectionY;
-            }
-            
-            direction = (direction + 1) % 4;
-            position = newPosition;
-        }
+        return _graph.Visited.Length;
     }
     
     private int CountLoops()
     {
         var count = 0;
 
-        Parallel.For(0, Input.Length, row =>
+        Parallel.For(0, _graph.Visited.Length, i =>
         {
-            for (var col = 0; col < Input[0].Length; col++)
-            {
-                if (row == 0 && col == 0) continue;
-                if (CreatesLoop(new Point(row, col))) Interlocked.Increment(ref count);
-            }
+            if (CreatesLoop(_graph.Visited[i])) Interlocked.Increment(ref count);
         });
         
         return count;
@@ -119,47 +79,33 @@ public sealed class Day06 : BaseDay
 
     private Graph BuildGraph()
     {
-        var obstructions = FindObstructions();
         var nodes = new Node?[Input.Length][];
         Point start = default;
 
-        for (var row = 0; row < Input.Length; row++)
+        Parallel.For(0, Input.Length, row =>
         {
             nodes[row] = new Node?[Input[0].Length];
             for (var col = 0; col < Input[0].Length; col++)
             {
                 if (Input[row][col] == '#') continue;
                 if (Input[row][col] == '^') start = new Point(row, col);
-                nodes[row][col] = CreateNode(row, col, obstructions);
+                nodes[row][col] = CreateNode(row, col);
             }
-        }
+        });
+
+        var visited = GetVisitedPositions(nodes, start);
         
-        return new Graph(nodes, obstructions, start);
+        return new Graph(nodes, start, visited);
     }
     
-    private HashSet<Point> FindObstructions()
-    {
-        var obstructions = new HashSet<Point>();
-        
-        for (var row = 0; row < Input.Length; row++)
-        {
-            for (var col = 0; col < Input[0].Length; col++)
-            {
-                if (Input[row][col] == '#') obstructions.Add(new Point(row, col));
-            }
-        }
-        
-        return obstructions;
-    }
-
-    private Node CreateNode(int row, int col, HashSet<Point> obstructions)
+    private Node CreateNode(int row, int col)
     {
         var node = new Node();
         
         for (var index = 0; index < Directions.Length; index++)
         {
             var direction = Directions[index];
-            var neighbour = MoveUntilBlocked(row, col, direction, obstructions);
+            var neighbour = MoveUntilBlocked(row, col, direction);
             
             if (neighbour.row != row || neighbour.col != col)
                 node.Neighbours[index] = new Point(neighbour.row, neighbour.col);
@@ -168,7 +114,7 @@ public sealed class Day06 : BaseDay
         return node;
     }
 
-    private (int row, int col) MoveUntilBlocked(int row, int col, Direction direction, HashSet<Point> obstructions)
+    private (int row, int col) MoveUntilBlocked(int row, int col, Direction direction)
     {
         while (true)
         {
@@ -177,12 +123,44 @@ public sealed class Day06 : BaseDay
             
             if (row < 0 || row >= Input.Length || col < 0 || col >= Input[0].Length)
                 return (row, col);
-            if (obstructions.Contains(new Point(row, col)))
+            if (Input[row][col] == '#')
                 return (row - direction.DirectionY, col - direction.DirectionX);
         }
     }
+
+    private static Point[] GetVisitedPositions(Node?[][] nodes, Point position)
+    {
+        var width = nodes[0].Length;
+        var height = nodes.Length;
+
+        var visited = new HashSet<Point>();
+        var direction = 0;
+        
+        while (position.Col < width && position.Row < height && position.Col >= 0 && position.Row >= 0)
+        {
+            var node = nodes[position.Row][position.Col]!.Value;
+            while (!node.Neighbours[direction].HasValue)
+            {
+                direction = (direction + 1) % 4;
+            }
+            
+            var newPosition = node.Neighbours[direction]!.Value;
+
+            while (position.Col != newPosition.Col || position.Row != newPosition.Row)
+            {
+                visited.Add(position);
+                position.Col += Directions[direction].DirectionX;
+                position.Row += Directions[direction].DirectionY;
+            }
+            
+            direction = (direction + 1) % 4;
+            position = newPosition;
+        }
+        
+        return visited.ToArray();
+    }
     
-    private record struct Graph(Node?[][] Nodes, HashSet<Point> Obstructions, Point Start);
+    private record struct Graph(Node?[][] Nodes, Point Start, Point[] Visited);
     
     private struct Node()
     {
