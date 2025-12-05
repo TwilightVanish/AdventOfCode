@@ -17,6 +17,13 @@ public static class CustomParser
         for (var i = 0; i < input.Length; i++) value = value * 10 + (input[i] - '0');
         return value;
     }
+    
+    public static long ParseLong(ReadOnlySpan<char> input)
+    {
+        var value = 0L;
+        for (var i = 0; i < input.Length; i++) value = value * 10 + (input[i] - '0');
+        return value;
+    }
 
     public static int CheckedParseInt(string input)
     {
@@ -45,6 +52,17 @@ public static class CustomParser
     public static int ParseIntWithRefOffset(ReadOnlySpan<char> span, ref int offset)
     {
         var result = 0;
+        var start = offset;
+        while (offset < span.Length && span[offset] >= '0' && span[offset] <= '9')
+        {
+            result = result * 10 + (span[offset++] - '0');
+        }
+        return result;
+    }
+    
+    public static long ParseLongWithRefOffset(ReadOnlySpan<char> span, ref int offset)
+    {
+        var result = 0L;
         var start = offset;
         while (offset < span.Length && span[offset] >= '0' && span[offset] <= '9')
         {
